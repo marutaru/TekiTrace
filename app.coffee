@@ -40,9 +40,9 @@ dict = new Array
 getListByGoogle = (socket,word)->
   origin =
     "text":word
-    "value":50
+    "value":5
     "part":"origin"
-  socket.json.emit("add node",origin)
+  socket.json.emit("send node",origin)
   options =
     hostname: 'www.google.co.jp'
     path: "/search?num=50&ie=UTF-8&oe=UTF-8&q=#{word}"
@@ -94,16 +94,16 @@ getListByGoogle = (socket,word)->
           # sort dict
           # now value >= 3
           dict = _.reject(dict,(word) ->
-            word.value < 3 or word.text is origin.text
+            word.value < 3
+          # or word.text is origin.text
           )
           for word in dict
-            socket.json.emit("add node",word)
+            socket.json.emit("send node",word)
             socket.json.emit("add link",
               json =
                 "tempSource":origin.text
                 "tempTarget":word.text
             )
-          # console.log dict
         )
       catch e
         console.log e
