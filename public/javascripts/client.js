@@ -59,7 +59,7 @@
       svg.selectAll("text").remove();
       svg.selectAll("circle").remove();
       node.insert("circle").attr("r", function(d) {
-        return d.value;
+        return Math.sqrt(d.value) * 2;
       }).attr("fill", function(d) {
         if (d.id > 40) {
           return "cyan";
@@ -80,20 +80,19 @@
       link.enter().insert("line").attr("class", "link").style("stroke-width", 1).style("stroke", "red").style("opacity", 0.1);
       return force.on("tick", tick).start();
     };
-    socket.on("add node", function(json) {
-      console.log(json);
-      json.id = nodes.length;
-      nodes.push(json);
-      texts = _.pluck(nodes, 'text');
-      return update();
-    });
-    socket.on("update node", function(json) {
-      console.log(json);
-      node = _.findWhere(nodes, {
-        text: json.text
-      });
-      node = json;
-      return update();
+    socket.on("send node", function(json) {
+      if (_.contains(texts, json.text) === true) {
+        node = _.findWhere(nodes, {
+          text: json.text
+        });
+        node.value += json.value;
+        return update();
+      } else {
+        json.id = nodes.length;
+        nodes.push(json);
+        texts = _.pluck(nodes, 'text');
+        return update();
+      }
     });
     socket.on("add link", function(json) {
       var target;

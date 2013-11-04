@@ -100,7 +100,7 @@ $ ->
 
     node.insert("circle")
     .attr("r",(d)->
-      return d.value
+      return Math.sqrt(d.value)*2
     )
     .attr("fill",(d) ->
       if d.id > 40
@@ -130,23 +130,19 @@ $ ->
     force.on("tick",tick).start()
 
   # connection
-
-  # add node
-  socket.on("add node",(json) ->
-    console.log json
-    json.id = nodes.length
-    nodes.push json
-    texts = _.pluck(nodes,'text')
-    update()
-  )
-  # update node
-  # must fix
-  # Now only value
-  socket.on("update node",(json) ->
-    console.log json
-    node = _.findWhere(nodes,text:json.text)
-    node = json
-    update()
+  
+  # send node
+  socket.on("send node",(json)->
+    if _.contains(texts,json.text) is true
+      node = _.findWhere(nodes,text:json.text)
+      node.value += json.value
+      update()
+    # if not have
+    else
+      json.id = nodes.length
+      nodes.push json
+      texts = _.pluck(nodes,'text')
+      update()
   )
   # add link
   socket.on("add link",(json) ->

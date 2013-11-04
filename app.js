@@ -61,10 +61,10 @@
 
     origin = {
       "text": word,
-      "value": 50,
+      "value": 5,
       "part": "origin"
     };
-    socket.json.emit("add node", origin);
+    socket.json.emit("send node", origin);
     options = {
       hostname: 'www.google.co.jp',
       path: "/search?num=50&ie=UTF-8&oe=UTF-8&q=" + word
@@ -117,12 +117,12 @@
             }
             console.log("::::::::::::::::::::::::::");
             dict = _.reject(dict, function(word) {
-              return word.value < 3 || word.text === origin.text;
+              return word.value < 3;
             });
             _results = [];
             for (_j = 0, _len1 = dict.length; _j < _len1; _j++) {
               word = dict[_j];
-              socket.json.emit("add node", word);
+              socket.json.emit("send node", word);
               _results.push(socket.json.emit("add link", json = {
                 "tempSource": origin.text,
                 "tempTarget": word.text
