@@ -59,7 +59,7 @@
       svg.selectAll("text").remove();
       svg.selectAll("circle").remove();
       node.insert("circle").attr("r", function(d) {
-        return Math.sqrt(d.value) * 2;
+        return Math.sqrt(d.value);
       }).attr("fill", function(d) {
         if (d.id > 40) {
           return "cyan";
@@ -80,6 +80,9 @@
       link.enter().insert("line").attr("class", "link").style("stroke-width", 1).style("stroke", "red").style("opacity", 0.1);
       return force.on("tick", tick).start();
     };
+    socket.on("debug", function(debug) {
+      return console.log(debug);
+    });
     socket.on("send node", function(json) {
       if (_.contains(texts, json.text) === true) {
         node = _.findWhere(nodes, {

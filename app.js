@@ -56,9 +56,10 @@
 
   dict = new Array;
 
-  getListByGoogle = function(socket, word) {
+  getListByGoogle = function(socket, word, hop) {
     var options, origin;
 
+    hop += 1;
     origin = {
       "text": word,
       "value": 5,
@@ -92,6 +93,12 @@
             result = _.reject(result, function(text) {
               return text[0] === "ページ";
             });
+            result = _.reject(result, function(text) {
+              return text[0] === "動画";
+            });
+            result = _.reject(result, function(text) {
+              return text[0] === "画像";
+            });
             for (_i = 0, _len = result.length; _i < _len; _i++) {
               parts = result[_i];
               if (parts[1] === '名詞' && parts[2] === '一般') {
@@ -123,10 +130,16 @@
             for (_j = 0, _len1 = dict.length; _j < _len1; _j++) {
               word = dict[_j];
               socket.json.emit("send node", word);
-              _results.push(socket.json.emit("add link", json = {
+              socket.json.emit("add link", json = {
                 "tempSource": origin.text,
                 "tempTarget": word.text
-              }));
+              });
+              if (hop < 3) {
+                socket.emit("debug", "debug");
+                _results.push(getListByGoogle(socket, word.text, hop));
+              } else {
+                _results.push(void 0);
+              }
             }
             return _results;
           });
@@ -145,7 +158,7 @@
   io.sockets.on('connection', function(socket) {
     console.log("connect");
     socket.on('word', function(word) {
-      return getListByGoogle(socket, word);
+      return getListByGoogle(socket, word, 1);
     });
     return socket.on('disconnect', function() {
       return console.log("disconnect");

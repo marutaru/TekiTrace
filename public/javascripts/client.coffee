@@ -100,7 +100,7 @@ $ ->
 
     node.insert("circle")
     .attr("r",(d)->
-      return Math.sqrt(d.value)*2
+      return Math.sqrt(d.value)
     )
     .attr("fill",(d) ->
       if d.id > 40
@@ -131,6 +131,9 @@ $ ->
 
   # connection
   
+  socket.on("debug",(debug)->
+    console.log debug
+  )
   # send node
   socket.on("send node",(json)->
     if _.contains(texts,json.text) is true
@@ -152,7 +155,6 @@ $ ->
     else
       console.log json
       target = json.tempTarget
-      #target = target.match(/http:\/\/gyazz.com\/増井研\/(.+)/)
       if _.contains(texts,target) is true
         json.target = _.indexOf(texts,target)
         json.source = _.indexOf(texts,json.tempSource)
