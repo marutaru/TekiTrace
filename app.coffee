@@ -37,7 +37,8 @@ server = http.createServer(app).listen(app.get('port'), ()->
 
 dict = new Array
 
-getListByGoogle = (socket,word)->
+getListByGoogle = (socket,word,hop)->
+  hop += 1
   origin =
     "text":word
     "value":5
@@ -68,6 +69,12 @@ getListByGoogle = (socket,word)->
           result = _.reject(result,(text)->
             text[0] is "ページ"
           )
+          result = _.reject(result,(text)->
+            text[0] is "動画"
+          )
+          result = _.reject(result,(text)->
+            text[0] is "画像"
+          )
           for parts in result
             # Noun
             if parts[1] is '名詞' and parts[2] is '一般'
@@ -95,7 +102,6 @@ getListByGoogle = (socket,word)->
           # now value >= 3
           dict = _.reject(dict,(word) ->
             word.value < 3
-          # or word.text is origin.text
           )
           for word in dict
             socket.json.emit("send node",word)
@@ -104,6 +110,9 @@ getListByGoogle = (socket,word)->
                 "tempSource":origin.text
                 "tempTarget":word.text
             )
+            if hop < 3
+              socket.emit("debug","debug")
+              getListByGoogle(socket,word.text,hop)
         )
       catch e
         console.log e
@@ -118,7 +127,7 @@ io.sockets.on('connection',(socket) ->
   console.log "connect"
 
   socket.on('word',(word)->
-    getListByGoogle(socket,word)
+    getListByGoogle(socket,word,1)
   )
 
   socket.on('disconnect',() ->
