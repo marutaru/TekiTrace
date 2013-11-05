@@ -4,15 +4,15 @@
     var force, height, hideNodes, hideTitles, link, links, node, nodes, socket, svg, texts, tick, update, width, zoomIn, zoomOut;
 
     socket = io.connect('http://localhost:3000');
-    width = 600;
-    height = 400;
+    width = 800;
+    height = 800;
     nodes = new Array;
     links = new Array;
     hideNodes = new Array;
     hideTitles = new Array;
     texts = new Array;
     svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
-    force = d3.layout.force().nodes(nodes).links(links).size([width, height]).gravity(0.5).distance(100).charge(-500);
+    force = d3.layout.force().nodes(nodes).links(links).size([width, height]).gravity(0.5).distance(200).charge(-500);
     tick = function() {
       link.attr("x1", function(d) {
         return d.source.x;
@@ -77,7 +77,7 @@
         return d.text;
       }).style("opacity", 0.7);
       link = svg.selectAll(".link").data(links);
-      link.enter().insert("line").attr("class", "link").style("stroke-width", 1).style("stroke", "red").style("opacity", 0.1);
+      link.enter().insert("line").attr("class", "link").style("stroke-width", 1).style("stroke", "red").style("opacity", 0.0);
       return force.on("tick", tick).start();
     };
     socket.on("debug", function(debug) {

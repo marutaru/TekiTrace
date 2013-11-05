@@ -3,8 +3,8 @@ $ ->
   # for local
   socket = io.connect('http://localhost:3000')
 
-  width = 600
-  height = 400
+  width = 800
+  height = 800
 
   nodes = new Array
   links = new Array
@@ -24,7 +24,7 @@ $ ->
   .links(links)
   .size([width,height])
   .gravity(0.5)
-  .distance(100)
+  .distance(200)
   .charge(-500)
 
   # calculate x and y
@@ -89,7 +89,7 @@ $ ->
       ).style("opacity",1)
     ).on("mouseout",(e) ->
       svg.selectAll(".link")
-      .style("opacity",0.1)
+      .style("opacity",0.0)
     )
     .on("click",zoomIn)
     .call(force.drag)
@@ -125,7 +125,7 @@ $ ->
     .attr("class","link")
     .style("stroke-width",1)
     .style("stroke","red")
-    .style("opacity",0.1)
+    .style("opacity",0.0)
 
     force.on("tick",tick).start()
 
