@@ -49,6 +49,8 @@ getListByGoogle = (socket,word,hop)->
     path: "/search?num=50&ie=UTF-8&oe=UTF-8&q=#{word}"
   http.get(options,(res) ->
     console.log "status"+res.statusCode
+    if res.statusCode is 302
+      console.log res
     body =''
     res.on('data',(data)->
       body += data.toString()
