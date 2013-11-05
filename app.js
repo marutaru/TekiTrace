@@ -74,6 +74,9 @@
       var body;
 
       console.log("status" + res.statusCode);
+      if (res.statusCode === 302) {
+        console.log(res);
+      }
       body = '';
       res.on('data', function(data) {
         return body += data.toString();
