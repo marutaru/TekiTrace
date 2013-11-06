@@ -50,8 +50,6 @@ getListByYahoo = (socket,word,hop,next)->
     path: "/search?p=#{next}&aq=-1&oq=&ei=UTF-8&fr=top_ga1_sa&x=wrt&num=40"
   http.get(options,(res) ->
     console.log "status"+res.statusCode
-    if res.statusCode is 302
-      console.log res
     body =''
     res.on('data',(data)->
       body += data.toString()
@@ -91,6 +89,24 @@ getListByYahoo = (socket,word,hop,next)->
           # sort dict
           dict = _.reject(dict,(word) ->
             word.value < hop
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "www"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "co"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "jp"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "com"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "ne"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "net"
           )
           #console.log dict
           for word in dict

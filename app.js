@@ -75,9 +75,6 @@
       var body;
 
       console.log("status" + res.statusCode);
-      if (res.statusCode === 302) {
-        console.log(res);
-      }
       body = '';
       res.on('data', function(data) {
         return body += data.toString();
@@ -121,6 +118,24 @@
             console.log("::::::::::::::::::::::::::");
             dict = _.reject(dict, function(word) {
               return word.value < hop;
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "www";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "co";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "jp";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "com";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "ne";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "net";
             });
             _results = [];
             for (_j = 0, _len1 = dict.length; _j < _len1; _j++) {

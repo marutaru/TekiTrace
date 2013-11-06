@@ -12,7 +12,7 @@
     hideTitles = new Array;
     texts = new Array;
     svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
-    force = d3.layout.force().nodes(nodes).links(links).size([width, height]).gravity(0.5).distance(300).charge(-200);
+    force = d3.layout.force().nodes(nodes).links(links).size([width, height]).gravity(0.3).linkDistance(300).linkStrength(0.5).charge(-500).friction(1);
     tick = function() {
       link.attr("x1", function(d) {
         return d.source.x;
@@ -37,7 +37,7 @@
       links.length = 0;
       svg.selectAll("g").data(nodes).exit().remove();
       svg.selectAll("line").data(links).exit().remove();
-      socket.json.emit("zoom json", json);
+      socket.emit("word", json.text);
       return update();
     };
     zoomOut = function() {
