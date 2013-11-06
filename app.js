@@ -88,20 +88,8 @@
         try {
           $ = cheerio.load(body);
           src = $("a").text();
-          /*
-          $("a").each((i,elem)->
-            console.log $("a")[i].attribs.href
-          )
-          */
-
           src += $("#web").text();
           return mecab.parse(src, function(err, result) {
-            /*
-            result = _.reject(result,(text)->
-              text[0] is "キャッシュ"
-            )
-            */
-
             var json, parts, _i, _j, _len, _len1, _results;
 
             for (_i = 0, _len = result.length; _i < _len; _i++) {
@@ -119,13 +107,16 @@
                   "value": 1
                 });
               }
-              if (parts[1] === '形容詞') {
-                dict.push({
-                  "text": parts[0],
-                  "part": "adj",
-                  "value": 1
-                });
-              }
+              /*
+              if parts[1] is '形容詞'
+                # init adj
+                dict.push(
+                  "text":parts[0]
+                  "part":"adj"
+                  "value":1
+                )
+              */
+
             }
             console.log("::::::::::::::::::::::::::");
             dict = _.reject(dict, function(word) {

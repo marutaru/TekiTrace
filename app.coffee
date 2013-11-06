@@ -60,20 +60,8 @@ getListByYahoo = (socket,word,hop,next)->
       try
         $ = cheerio.load body
         src = $("a").text()
-        ###
-        $("a").each((i,elem)->
-          console.log $("a")[i].attribs.href
-        )
-        ###
         src += $("#web").text()
         mecab.parse(src,(err,result)->
-          #console.log result
-          # for google
-          ###
-          result = _.reject(result,(text)->
-            text[0] is "キャッシュ"
-          )
-          ###
           for parts in result
             # Noun
             if parts[1] is '名詞' and parts[2] is '一般'
@@ -89,6 +77,7 @@ getListByYahoo = (socket,word,hop,next)->
                 "value":1
               )
             # Adjactive
+            ###
             if parts[1] is '形容詞'
               # init adj
               dict.push(
@@ -96,6 +85,7 @@ getListByYahoo = (socket,word,hop,next)->
                 "part":"adj"
                 "value":1
               )
+            ###
           console.log "::::::::::::::::::::::::::"
           # console.log dict
           # sort dict
@@ -120,7 +110,6 @@ getListByYahoo = (socket,word,hop,next)->
   ).on('error',(e) ->
     console.log e
   )
-#getListByYahoo("socket","チェルシー",1)
 
 io = require('socket.io').listen(server)
 
