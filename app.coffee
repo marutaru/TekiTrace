@@ -37,16 +37,17 @@ server = http.createServer(app).listen(app.get('port'), ()->
 
 dict = new Array
 
-getListByGoogle = (socket,word,hop)->
+getListByYahoo = (socket,word,hop,next)->
   hop += 1
   origin =
     "text":word
     "value":5
     "part":"origin"
+  console.log origin
   socket.json.emit("send node",origin)
   options =
-    hostname: 'www.google.co.jp'
-    path: "/search?num=50&ie=UTF-8&oe=UTF-8&q=#{word}"
+    hostname: 'search.yahoo.co.jp'
+    path: "/search?p=#{next}&aq=-1&oq=&ei=UTF-8&fr=top_ga1_sa&x=wrt&num=40"
   http.get(options,(res) ->
     console.log "status"+res.statusCode
     if res.statusCode is 302
@@ -58,25 +59,21 @@ getListByGoogle = (socket,word,hop)->
     res.on('end',() ->
       try
         $ = cheerio.load body
-        #console.log $("a").text()
-        #console.log $("a")[0].data()
         src = $("a").text()
+        ###
+        $("a").each((i,elem)->
+          console.log $("a")[i].attribs.href
+        )
+        ###
+        src += $("#web").text()
         mecab.parse(src,(err,result)->
           #console.log result
-
           # for google
+          ###
           result = _.reject(result,(text)->
             text[0] is "キャッシュ"
           )
-          result = _.reject(result,(text)->
-            text[0] is "ページ"
-          )
-          result = _.reject(result,(text)->
-            text[0] is "動画"
-          )
-          result = _.reject(result,(text)->
-            text[0] is "画像"
-          )
+          ###
           for parts in result
             # Noun
             if parts[1] is '名詞' and parts[2] is '一般'
@@ -100,12 +97,14 @@ getListByGoogle = (socket,word,hop)->
                 "value":1
               )
           console.log "::::::::::::::::::::::::::"
+          # console.log dict
           # sort dict
-          # now value >= 3
           dict = _.reject(dict,(word) ->
-            word.value < 3
+            word.value < hop
           )
+          #console.log dict
           for word in dict
+            console.log word
             socket.json.emit("send node",word)
             socket.json.emit("add link",
               json =
@@ -113,8 +112,7 @@ getListByGoogle = (socket,word,hop)->
                 "tempTarget":word.text
             )
             if hop < 3
-              socket.emit("debug","debug")
-              getListByGoogle(socket,word.text,hop)
+              getListByYahoo(socket,word.text,hop,word.text+" "+origin.text)
         )
       catch e
         console.log e
@@ -122,6 +120,7 @@ getListByGoogle = (socket,word,hop)->
   ).on('error',(e) ->
     console.log e
   )
+#getListByYahoo("socket","チェルシー",1)
 
 io = require('socket.io').listen(server)
 
@@ -129,7 +128,7 @@ io.sockets.on('connection',(socket) ->
   console.log "connect"
 
   socket.on('word',(word)->
-    getListByGoogle(socket,word,1)
+    getListByYahoo(socket,word,1,word)
   )
 
   socket.on('disconnect',() ->

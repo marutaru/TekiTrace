@@ -24,8 +24,8 @@ $ ->
   .links(links)
   .size([width,height])
   .gravity(0.5)
-  .distance(200)
-  .charge(-500)
+  .distance(300)
+  .charge(-200)
 
   # calculate x and y
   tick = () ->

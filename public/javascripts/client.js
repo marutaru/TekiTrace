@@ -12,7 +12,7 @@
     hideTitles = new Array;
     texts = new Array;
     svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
-    force = d3.layout.force().nodes(nodes).links(links).size([width, height]).gravity(0.5).distance(200).charge(-500);
+    force = d3.layout.force().nodes(nodes).links(links).size([width, height]).gravity(0.5).distance(300).charge(-200);
     tick = function() {
       link.attr("x1", function(d) {
         return d.source.x;
@@ -54,7 +54,7 @@
           return d.source.text === e.text || d.target.text === e.text;
         }).style("opacity", 1);
       }).on("mouseout", function(e) {
-        return svg.selectAll(".link").style("opacity", 0.1);
+        return svg.selectAll(".link").style("opacity", 0.0);
       }).on("click", zoomIn).call(force.drag);
       svg.selectAll("text").remove();
       svg.selectAll("circle").remove();
