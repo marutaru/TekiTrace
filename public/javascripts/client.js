@@ -12,7 +12,7 @@
     hideTitles = new Array;
     texts = new Array;
     svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
-    force = d3.layout.force().nodes(nodes).links(links).size([width, height]).gravity(0.3).linkDistance(300).linkStrength(0.5).charge(-500).friction(1);
+    force = d3.layout.force().nodes(nodes).links(links).size([width, height]).gravity(0.6).linkDistance(300).linkStrength(1).charge(-1000).friction(1);
     tick = function() {
       link.attr("x1", function(d) {
         return d.source.x;

@@ -43,6 +43,9 @@ getListByYahoo = (socket,word,hop,next)->
     "text":word
     "value":5
     "part":"origin"
+    "fixed":true
+    "x":400
+    "y":400
   console.log origin
   socket.json.emit("send node",origin)
   options =

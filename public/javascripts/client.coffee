@@ -23,10 +23,10 @@ $ ->
   .nodes(nodes)
   .links(links)
   .size([width,height])
-  .gravity(0.3)
+  .gravity(0.6)
   .linkDistance(300)
-  .linkStrength(0.5)
-  .charge(-500)
+  .linkStrength(1)
+  .charge(-1000)
   .friction(1)
 
   # calculate x and y
