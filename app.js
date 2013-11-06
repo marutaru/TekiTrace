@@ -63,7 +63,10 @@
     origin = {
       "text": word,
       "value": 5,
-      "part": "origin"
+      "part": "origin",
+      "fixed": true,
+      "x": 400,
+      "y": 400
     };
     console.log(origin);
     socket.json.emit("send node", origin);
@@ -75,9 +78,6 @@
       var body;
 
       console.log("status" + res.statusCode);
-      if (res.statusCode === 302) {
-        console.log(res);
-      }
       body = '';
       res.on('data', function(data) {
         return body += data.toString();
@@ -88,20 +88,8 @@
         try {
           $ = cheerio.load(body);
           src = $("a").text();
-          /*
-          $("a").each((i,elem)->
-            console.log $("a")[i].attribs.href
-          )
-          */
-
           src += $("#web").text();
           return mecab.parse(src, function(err, result) {
-            /*
-            result = _.reject(result,(text)->
-              text[0] is "キャッシュ"
-            )
-            */
-
             var json, parts, _i, _j, _len, _len1, _results;
 
             for (_i = 0, _len = result.length; _i < _len; _i++) {
@@ -119,17 +107,38 @@
                   "value": 1
                 });
               }
-              if (parts[1] === '形容詞') {
-                dict.push({
-                  "text": parts[0],
-                  "part": "adj",
-                  "value": 1
-                });
-              }
+              /*
+              if parts[1] is '形容詞'
+                # init adj
+                dict.push(
+                  "text":parts[0]
+                  "part":"adj"
+                  "value":1
+                )
+              */
+
             }
             console.log("::::::::::::::::::::::::::");
             dict = _.reject(dict, function(word) {
               return word.value < hop;
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "www";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "co";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "jp";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "com";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "ne";
+            });
+            dict = _.reject(dict, function(word) {
+              return word.text === "net";
             });
             _results = [];
             for (_j = 0, _len1 = dict.length; _j < _len1; _j++) {

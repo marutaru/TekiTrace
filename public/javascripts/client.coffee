@@ -23,9 +23,11 @@ $ ->
   .nodes(nodes)
   .links(links)
   .size([width,height])
-  .gravity(0.5)
-  .distance(300)
-  .charge(-200)
+  .gravity(0.6)
+  .linkDistance(300)
+  .linkStrength(1)
+  .charge(-1000)
+  .friction(1)
 
   # calculate x and y
   tick = () ->
@@ -53,7 +55,8 @@ $ ->
     links.length = 0
     svg.selectAll("g").data(nodes).exit().remove()
     svg.selectAll("line").data(links).exit().remove()
-    socket.json.emit("zoom json",json)
+    #socket.json.emit("zoom json",json)
+    socket.emit("word",json.text)
     update()
 
   # zoomOut event

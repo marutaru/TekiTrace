@@ -43,6 +43,9 @@ getListByYahoo = (socket,word,hop,next)->
     "text":word
     "value":5
     "part":"origin"
+    "fixed":true
+    "x":400
+    "y":400
   console.log origin
   socket.json.emit("send node",origin)
   options =
@@ -50,8 +53,6 @@ getListByYahoo = (socket,word,hop,next)->
     path: "/search?p=#{next}&aq=-1&oq=&ei=UTF-8&fr=top_ga1_sa&x=wrt&num=40"
   http.get(options,(res) ->
     console.log "status"+res.statusCode
-    if res.statusCode is 302
-      console.log res
     body =''
     res.on('data',(data)->
       body += data.toString()
@@ -60,20 +61,8 @@ getListByYahoo = (socket,word,hop,next)->
       try
         $ = cheerio.load body
         src = $("a").text()
-        ###
-        $("a").each((i,elem)->
-          console.log $("a")[i].attribs.href
-        )
-        ###
         src += $("#web").text()
         mecab.parse(src,(err,result)->
-          #console.log result
-          # for google
-          ###
-          result = _.reject(result,(text)->
-            text[0] is "キャッシュ"
-          )
-          ###
           for parts in result
             # Noun
             if parts[1] is '名詞' and parts[2] is '一般'
@@ -89,6 +78,7 @@ getListByYahoo = (socket,word,hop,next)->
                 "value":1
               )
             # Adjactive
+            ###
             if parts[1] is '形容詞'
               # init adj
               dict.push(
@@ -96,11 +86,30 @@ getListByYahoo = (socket,word,hop,next)->
                 "part":"adj"
                 "value":1
               )
+            ###
           console.log "::::::::::::::::::::::::::"
           # console.log dict
           # sort dict
           dict = _.reject(dict,(word) ->
             word.value < hop
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "www"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "co"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "jp"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "com"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "ne"
+          )
+          dict = _.reject(dict,(word) ->
+            word.text is "net"
           )
           #console.log dict
           for word in dict
@@ -120,7 +129,6 @@ getListByYahoo = (socket,word,hop,next)->
   ).on('error',(e) ->
     console.log e
   )
-#getListByYahoo("socket","チェルシー",1)
 
 io = require('socket.io').listen(server)
 
