@@ -35,9 +35,8 @@ server = http.createServer(app).listen(app.get('port'), ()->
   console.log('Express server listening on port ' + app.get('port'))
 )
 
-dict = new Array
-
 getListByYahoo = (socket,word,hop,next)->
+  dict = new Array
   hop += 1
   origin =
     "text":word
@@ -78,7 +77,6 @@ getListByYahoo = (socket,word,hop,next)->
                 "value":1
               )
             # Adjactive
-            ###
             if parts[1] is '形容詞'
               # init adj
               dict.push(
@@ -86,10 +84,10 @@ getListByYahoo = (socket,word,hop,next)->
                 "part":"adj"
                 "value":1
               )
-            ###
           console.log "::::::::::::::::::::::::::"
           # console.log dict
           # sort dict
+          # module化したい
           dict = _.reject(dict,(word) ->
             word.value < hop
           )
