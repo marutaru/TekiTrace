@@ -35,8 +35,7 @@ server = http.createServer(app).listen(app.get('port'), ()->
   console.log('Express server listening on port ' + app.get('port'))
 )
 
-getListByYahoo = (socket,word,hop,next)->
-  dict = new Array
+getListByYahoo = (socket,word,hop,next,dict)->
   hop += 1
   origin =
     "text":word
@@ -119,7 +118,7 @@ getListByYahoo = (socket,word,hop,next)->
                 "tempTarget":word.text
             )
             if hop < 3
-              getListByYahoo(socket,word.text,hop,word.text+" "+origin.text)
+              getListByYahoo(socket,word.text,hop,word.text+" "+origin.text,dict)
         )
       catch e
         console.log e
@@ -133,10 +132,11 @@ io = require('socket.io').listen(server)
 io.sockets.on('connection',(socket) ->
   console.log "connect"
 
-  socket.on('word',(word)->
-    getListByYahoo(socket,word,1,word)
-  )
 
+  dict = new Array
+  socket.on('word',(word)->
+    getListByYahoo(socket,word,1,word,dict)
+  )
   socket.on('disconnect',() ->
     console.log "disconnect"
   )
